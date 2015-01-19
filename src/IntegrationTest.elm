@@ -12,7 +12,19 @@ tests = describe "Spec"
     , it "fails when substring is not present" <|
       shouldFail ("Principle" `shouldContain` "pal")
     , it "provides failure message" <|
-      ("Principle" `shouldContain` "pal") `shouldFailWithMessage` "Expected \"Principle\" to contain \"pal\""
+      ("Principle" `shouldContain` "pal")
+      `shouldFailWithMessage`
+      "Expected \"Principle\" to contain \"pal\""
+    ]
+  , describe "shouldEqual" <|
+    [ it "passes when equal" <|
+      3 `shouldEqual` 3
+    , it "fails when not equal" <|
+      shouldFail (2 `shouldEqual` 3)
+    , it "provides failure message" <|
+      (2 `shouldEqual` 3)
+      `shouldFailWithMessage`
+      "Expected 2 to equal 3"
     ]
   ]
 

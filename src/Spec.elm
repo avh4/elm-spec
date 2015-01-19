@@ -35,7 +35,9 @@ assert failureMessage b = if
   | otherwise -> Fail failureMessage
 
 shouldEqual : a -> a -> Assertion
-shouldEqual a b = assert "not equal" (a == b)
+shouldEqual a b = assert
+  ("Expected " ++ toString a ++ " to equal " ++ toString b)
+  (a == b)
 
 shouldFail : Assertion -> Assertion
 shouldFail a = case a of
