@@ -1,7 +1,7 @@
 module Spec
   ( describe, it
   , passes
-  , shouldEqual, shouldContain
+  , shouldEqual, shouldFail, shouldFailWithMessage, shouldContain
   , Spec(..)
   , Assertion(..)
   ) where
@@ -37,5 +37,20 @@ assert failureMessage b = if
 shouldEqual : a -> a -> Assertion
 shouldEqual a b = assert "not equal" (a == b)
 
+shouldFail : Assertion -> Assertion
+shouldFail a = case a of
+  Pass -> Fail "Expected failure"
+  Fail _ -> Pass
+
+shouldFailWithMessage : Assertion -> String -> Assertion
+shouldFailWithMessage a expectedMessage = case a of
+  Pass -> Fail "Expected failure"
+  Fail m -> assert
+    ("Expected " ++ toString a ++ " to be a failure with message \""
+      ++ expectedMessage ++ "\"")
+    (m == expectedMessage)
+
 shouldContain : String -> String -> Assertion
-shouldContain haystack needle = assert "doesn't contain" (String.contains needle haystack)
+shouldContain haystack needle = assert
+  ("Expected \"" ++ haystack ++ "\" to contain \"" ++ needle ++ "\"")
+  (String.contains needle haystack)
