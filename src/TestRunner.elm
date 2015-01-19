@@ -3,12 +3,10 @@ module Main where
 import IO.IO (..)
 import IO.Runner (Request, Response, run)
 
-import ElmTest.Runner.Console (runDisplay)
-
-import AllTests
+import IntegrationTest
 
 testRunner : IO ()
-testRunner = runDisplay AllTests.all
+testRunner = IntegrationTest.run
 
 port requests : Signal Request
 port requests = run responses testRunner
