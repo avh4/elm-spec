@@ -16,6 +16,7 @@ type Spec
 type Assertion
   = Pass
   | Fail String
+  | FailComparison String String String
 
 describe : String -> List Spec -> Spec
 describe = Group
@@ -35,19 +36,27 @@ assert failureMessage b = if
   | otherwise -> Fail failureMessage
 
 shouldEqual : a -> a -> Assertion
-shouldEqual a b = assert
-  ("Expected " ++ toString a ++ " to equal " ++ toString b)
-  (a == b)
+shouldEqual a b = if
+  | a == b -> Pass
+  | otherwise -> FailComparison
+    ("Expected " ++ toString a ++ " to equal " ++ toString b)
+    (toString a)
+    (toString b)
 
 shouldFail : Assertion -> Assertion
 shouldFail a = case a of
   Pass -> Fail "Expected failure"
   Fail _ -> Pass
+  FailComparison _ _ _ -> Pass
 
 shouldFailWithMessage : Assertion -> String -> Assertion
 shouldFailWithMessage a expectedMessage = case a of
   Pass -> Fail "Expected failure"
   Fail m -> assert
+    ("Expected " ++ toString a ++ " to be a failure with message \""
+      ++ expectedMessage ++ "\"")
+    (m == expectedMessage)
+  FailComparison m _ _ -> assert
     ("Expected " ++ toString a ++ " to be a failure with message \""
       ++ expectedMessage ++ "\"")
     (m == expectedMessage)
