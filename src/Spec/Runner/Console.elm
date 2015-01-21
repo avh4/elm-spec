@@ -13,18 +13,30 @@ import String
 import IO.IO (..)
 
 import Spec (..)
-import Spec.Diff (..)
+import Diff (..)
+
+greenBackground s = "\x1b[42m" ++ s ++ "\x1b[0m"
+redBackground s = "\x1b[41m" ++ s ++ "\x1b[0m"
+
+colorLines fn s = String.join "\n" (List.map fn (String.split "\n" s))
+
+changeToString c = case c of
+  NoChange s -> s
+  Added s -> colorLines greenBackground s
+  Removed s -> colorLines redBackground s
+  Changed a b -> (colorLines greenBackground a) ++ (colorLines redBackground b)
+
+legend = (greenBackground "+ expected") ++ " " ++ (redBackground "- actual") ++ "\n\n"
+
+changesToString : List Change -> String
+changesToString changes = String.join "" (List.map changeToString changes)
 
 print : String -> Spec -> IO ()
 print indent spec = case spec of
   Group name children -> List.foldl (\s io -> io >>> print (indent ++ "  ") s) (putStrLn (indent ++ "+ " ++ name)) children
   Test name Pass -> putStrLn <| indent ++ "- " ++ name
-  Test name (Fail message) -> putStrLn <| indent ++ "X " ++ name ++ ": " ++ message
-  Test name (FailComparison message a b) ->
-    (putStrLn <| indent ++ "X " ++ name ++ ": " ++ message)
-    >>> putStrLn ""
-    >>> putDiff a b
-    >>> putStrLn ""
+  Test name (Fail (Message m)) -> putStrLn <| indent ++ "X " ++ name ++ ": " ++ m
+  Test name (Fail (Diff m d)) -> putStrLn <| indent ++ "X " ++ name ++ ": " ++ m ++ "\n\n" ++ legend ++ changesToString d ++ "\n"
 
 exit' : Spec -> IO ()
 exit' spec = case passes spec of

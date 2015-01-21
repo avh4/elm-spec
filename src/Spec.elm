@@ -1,22 +1,26 @@
 module Spec
   ( describe, it
   , passes
-  , shouldEqual, shouldFail, shouldFailWithMessage, shouldContain
+  , shouldEqual, shouldEqualString, shouldFail, shouldFailWithMessage, shouldContain
   , Spec(..)
-  , Assertion(..)
+  , Assertion(..), Failure(..)
   ) where
 
 import List
 import String
+import Diff (..)
 
 type Spec
   = Group String (List Spec)
   | Test String Assertion
 
+type Failure
+  = Message String
+  | Diff String (List Change)
+
 type Assertion
   = Pass
-  | Fail String
-  | FailComparison String String String
+  | Fail Failure
 
 describe : String -> List Spec -> Spec
 describe = Group
@@ -33,33 +37,41 @@ passes spec = case spec of
 assert : String -> Bool -> Assertion
 assert failureMessage b = if
   | b -> Pass
-  | otherwise -> Fail failureMessage
+  | otherwise -> Fail (Message failureMessage)
 
 shouldEqual : a -> a -> Assertion
 shouldEqual a b = if
   | a == b -> Pass
-  | otherwise -> FailComparison
-    ("Expected " ++ toString a ++ " to equal " ++ toString b)
-    (toString a)
-    (toString b)
+  | otherwise -> Fail <|
+    Diff
+      ("Expected " ++ toString a ++ " to equal " ++ toString b)
+      (diffChars (toString a) (toString b))
+
+shouldEqualString : String -> String -> Assertion
+shouldEqualString a b = if
+  | a == b -> Pass
+  | otherwise -> Fail <|
+    Diff
+      ("Expected " ++ toString a ++ " to equal " ++ toString b)
+      (diffChars a b)
 
 shouldFail : Assertion -> Assertion
 shouldFail a = case a of
-  Pass -> Fail "Expected failure"
+  Pass -> Fail (Message "Expected failure")
   Fail _ -> Pass
-  FailComparison _ _ _ -> Pass
+
+messageOf : Failure -> String
+messageOf f = case f of
+  Message m -> m
+  Diff m _ -> m
 
 shouldFailWithMessage : Assertion -> String -> Assertion
 shouldFailWithMessage a expectedMessage = case a of
-  Pass -> Fail "Expected failure"
+  Pass -> Fail (Message "Expected failure")
   Fail m -> assert
     ("Expected " ++ toString a ++ " to be a failure with message \""
       ++ expectedMessage ++ "\"")
-    (m == expectedMessage)
-  FailComparison m _ _ -> assert
-    ("Expected " ++ toString a ++ " to be a failure with message \""
-      ++ expectedMessage ++ "\"")
-    (m == expectedMessage)
+    ((messageOf m) == expectedMessage)
 
 shouldContain : String -> String -> Assertion
 shouldContain haystack needle = assert
