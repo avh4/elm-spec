@@ -5,6 +5,12 @@ import IO.IO (..)
 import Spec (..)
 import Spec.Runner.Console as Console
 
+import Maybe
+
+type TestType
+  = Foo { x: Int }
+  | Bar (Maybe String)
+
 tests = describe "Spec"
   [ describe "shouldContain" <|
     [ it "passes when substring is present" <|
@@ -25,6 +31,10 @@ tests = describe "Spec"
       (2 `shouldEqual` 3)
       `shouldFailWithMessage`
       "Expected 2 to equal 3"
+    , it "compares Elm objects" <|
+      (Foo {x=1} `shouldEqual` Bar (Just "hi"))
+      `shouldFailWithMessage`
+      "Expected Foo { x = 1 } to equal Bar (Just \"hi\")"
     ]
   ]
 
