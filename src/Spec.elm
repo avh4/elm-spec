@@ -1,7 +1,7 @@
 module Spec
   ( describe, it
   , passes
-  , shouldEqual, shouldEqualString, shouldFail, shouldFailWithMessage, shouldContain
+  , shouldEqual, shouldEqualString, shouldContain
   , Spec(..)
   , Assertion(..), Failure(..)
   ) where
@@ -58,25 +58,6 @@ shouldEqualString a b = if
     Diff
       ("Expected " ++ toString a ++ " to equal " ++ toString b)
       (diffChars a b)
-
-shouldFail : Assertion -> Assertion
-shouldFail a = case a of
-  Pass -> Fail (Message "Expected failure")
-  Fail _ -> Pass
-
-messageOf : Failure -> String
-messageOf f = case f of
-  Message m -> m
-  Diff m _ -> m
-
-shouldFailWithMessage : Assertion -> String -> Assertion
-shouldFailWithMessage a expectedMessage = case a of
-  Pass -> Fail (Message "Expected failure")
-  Fail m -> assertWithDiff
-    ("Expected " ++ toString a ++ " to be a failure with message \""
-      ++ expectedMessage ++ "\"")
-    ((messageOf m) == expectedMessage)
-    (expectedMessage) (messageOf m)
 
 shouldContain : String -> String -> Assertion
 shouldContain haystack needle = assert

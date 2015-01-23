@@ -3,6 +3,7 @@ module IntegrationTest where
 import IO.IO (..)
 
 import Spec (..)
+import Spec.Assertions (..)
 import Spec.Runner.Console as Console
 
 import Maybe

@@ -8,6 +8,7 @@
     ],
     "exposed-modules": [
         "Spec",
+        "Spec.Assertions",
         "Spec.Runner.Console"
     ],
     "dependencies": {
