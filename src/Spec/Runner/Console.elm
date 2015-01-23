@@ -33,10 +33,10 @@ changesToString changes = String.join "" (List.map changeToString changes)
 
 print : String -> Spec -> IO ()
 print indent spec = case spec of
+  Pass -> putStrLn <| indent ++ "- OKAY"
+  Fail (Message m) -> putStrLn <| indent ++ "X " ++ ": " ++ m
+  Fail (Diff m d) -> putStrLn <| indent ++ "X " ++ ": " ++ m ++ "\n\n" ++ legend ++ changesToString d ++ "\n"
   Group name children -> List.foldl (\s io -> io >>> print (indent ++ "  ") s) (putStrLn (indent ++ "+ " ++ name)) children
-  Test name Pass -> putStrLn <| indent ++ "- " ++ name
-  Test name (Fail (Message m)) -> putStrLn <| indent ++ "X " ++ name ++ ": " ++ m
-  Test name (Fail (Diff m d)) -> putStrLn <| indent ++ "X " ++ name ++ ": " ++ m ++ "\n\n" ++ legend ++ changesToString d ++ "\n"
 
 exit' : Spec -> IO ()
 exit' spec = case passes spec of

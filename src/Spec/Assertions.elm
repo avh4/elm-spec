@@ -14,7 +14,7 @@ assertions and want to write unit tests for your assertion functions.
 import Spec (..)
 import Diff (..)
 
-shouldFail : Assertion -> Assertion
+shouldFail : Spec -> Spec
 shouldFail a = case a of
   Pass -> Fail (Message "Expected failure")
   Fail _ -> Pass
@@ -24,13 +24,13 @@ messageOf f = case f of
   Message m -> m
   Diff m _ -> m
 
-assertWithDiff : String -> Bool -> String -> String -> Assertion
+assertWithDiff : String -> Bool -> String -> String -> Spec
 assertWithDiff failureMessage b ax bx = if
   | b -> Pass
   | otherwise -> Fail (Diff failureMessage (diffChars ax bx))
 
-shouldFailWithMessage : Assertion -> String -> Assertion
-shouldFailWithMessage a expectedMessage = case a of
+shouldFailWithMessage : String -> Spec -> Spec
+shouldFailWithMessage expectedMessage a = case a of
   Pass -> Fail (Message "Expected failure")
   Fail m -> assertWithDiff
     ("Expected " ++ toString a ++ " to be a failure with message \""

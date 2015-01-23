@@ -1,9 +1,9 @@
 module Spec
-  ( describe, it
+  ( describe
   , passes
   , shouldEqual, shouldEqualString, shouldContain
   , Spec(..)
-  , Assertion(..), Failure(..)
+  , Failure(..)
   ) where
 
 import List
@@ -12,54 +12,48 @@ import Diff (..)
 
 type Spec
   = Group String (List Spec)
-  | Test String Assertion
+  | Pass
+  | Fail Failure
 
 type Failure
   = Message String
   | Diff String (List Change)
 
-type Assertion
-  = Pass
-  | Fail Failure
-
 describe : String -> List Spec -> Spec
 describe = Group
-
-it : String -> Assertion -> Spec
-it = Test
 
 passes : Spec -> Bool
 passes spec = case spec of
   Group _ children -> List.all passes children
-  Test _ Pass -> True
-  Test _ _ -> False
+  Pass -> True
+  Fail _ -> False
 
-assert : String -> Bool -> Assertion
+assert : String -> Bool -> Spec
 assert failureMessage b = if
   | b -> Pass
   | otherwise -> Fail (Message failureMessage)
 
-assertWithDiff : String -> Bool -> String -> String -> Assertion
+assertWithDiff : String -> Bool -> String -> String -> Spec
 assertWithDiff failureMessage b ax bx = if
   | b -> Pass
   | otherwise -> Fail (Diff failureMessage (diffChars ax bx))
 
-shouldEqual : a -> a -> Assertion
-shouldEqual a b = assertWithDiff
+shouldEqual : a -> a -> Spec
+shouldEqual b a = assertWithDiff
   ("Expected " ++ toString a ++ " to equal " ++ toString b)
   (a == b)
   (toString a)
   (toString b)
 
-shouldEqualString : String -> String -> Assertion
-shouldEqualString a b = if
+shouldEqualString : String -> String -> Spec
+shouldEqualString b a = if
   | a == b -> Pass
   | otherwise -> Fail <|
     Diff
       ("Expected " ++ toString a ++ " to equal " ++ toString b)
       (diffChars a b)
 
-shouldContain : String -> String -> Assertion
-shouldContain haystack needle = assert
+shouldContain : String -> String -> Spec
+shouldContain needle haystack = assert
   ("Expected \"" ++ haystack ++ "\" to contain \"" ++ needle ++ "\"")
   (String.contains needle haystack)
