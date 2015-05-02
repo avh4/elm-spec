@@ -8,7 +8,7 @@ module Spec
 
 import List
 import String
-import Diff (..)
+import Diff exposing (..)
 
 type Spec
   = Group String (List Spec)

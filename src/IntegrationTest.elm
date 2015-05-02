@@ -1,9 +1,9 @@
 module IntegrationTest where
 
-import IO.IO (..)
+import IO.IO exposing (..)
 
-import Spec (..)
-import Spec.Assertions (..)
+import Spec exposing (..)
+import Spec.Assertions exposing (..)
 import Spec.Runner.Console as Console
 
 import Maybe

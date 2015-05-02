@@ -10,10 +10,10 @@ module Spec.Runner.Console (run) where
 import List
 import String
 
-import IO.IO (..)
+import IO.IO exposing (..)
 
-import Spec (..)
-import Diff (..)
+import Spec exposing (..)
+import Diff exposing (..)
 
 greenBackground s = "\x1b[42m" ++ s ++ "\x1b[0m"
 redBackground s = "\x1b[41m" ++ s ++ "\x1b[0m"

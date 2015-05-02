@@ -11,8 +11,8 @@ assertions and want to write unit tests for your assertion functions.
 
 -}
 
-import Spec (..)
-import Diff (..)
+import Spec exposing (..)
+import Diff exposing (..)
 
 shouldFail : Spec -> Spec
 shouldFail a = case a of
