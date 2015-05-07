@@ -1,8 +1,8 @@
 {
     "version": "1.0.0",
-    "summary": "",
+    "summary": "Experimental alternative for writing unit tests",
     "repository": "https://github.com/avh4/elm-spec.git",
-    "license": "BSD3",
+    "license": "MIT",
     "source-directories": [
         "src"
     ],

@@ -6,6 +6,13 @@ module Spec
   , Failure(..)
   ) where
 
+{-| Functions for writing simple unit tests.
+
+# Defining specs
+@docs describe, passes, shouldEqual, shouldEqualString, shouldContain
+
+-}
+
 import List
 import String
 import Diff exposing (..)
