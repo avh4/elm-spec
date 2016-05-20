@@ -1,6 +1,4 @@
-module IntegrationTest where
-
-import IO.IO exposing (..)
+module IntegrationTest exposing (run)
 
 import Spec exposing (..)
 import Spec.Assertions exposing (..)
@@ -28,5 +26,5 @@ tests = describe "Spec"
     ]
   ]
 
-run : IO ()
+run : String
 run = Console.run tests

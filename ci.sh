@@ -13,9 +13,8 @@ fi
 
 mkdir -p build
 elm-make src/TestRunner.elm --output build/test.js
-./elm-io.sh build/test.js build/test.io.js
 
-node build/test.io.js
+node build/test.js
 
 set +x
 cat <<EOF

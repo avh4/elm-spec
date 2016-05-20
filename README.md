@@ -1,25 +1,15 @@
 Experimental alternative for writing unit tests
 
 ```elm
-module Main where
-
-import IO.IO exposing (..)
-import IO.Runner exposing (Request, Response, run)
-
 import Spec.Runner.Console as Console
 import Spec exposing (..)
 
-allTests = "Example"
-  [ describe "Subexample"
-    [ (1+1) `shouldEqual` 2
+allTests = 
+  describe "Addition"
+    [ it "is commutative" [ (1+2) `shouldEqual` (2+1) ]
+    , it "is associative" [ ((1+2)+3) `shouldEqual` (1+(2+3)) ]
     ]
-  ]
 
-testRunner : IO ()
+testRunner : String
 testRunner = Console.run allTests
-
-port requests : Signal Request
-port requests = run responses testRunner
-
-port responses : Signal Response
 ```
