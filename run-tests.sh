@@ -1,14 +1,9 @@
 #!/bin/bash
 
-set -e
-set -x
+set -ex
 
 if [ "$1" == "--clean" ]; then
   rm -Rf elm-stuff/build-artifacts
-fi
-
-if ! npm list | grep " jsdom@"; then
-  npm install jsdom@3
 fi
 
 mkdir -p build
