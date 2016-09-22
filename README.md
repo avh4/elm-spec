@@ -1,3 +1,5 @@
+You probably want elm-community/elm-test >= 2.x instead http://package.elm-lang.org/packages/elm-community/elm-test/latest
+
 Experimental alternative for writing unit tests
 
 ```elm
